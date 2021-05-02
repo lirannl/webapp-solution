@@ -8,4 +8,4 @@ app.get('/', handler);
 
 app.listen(port, () => {
     console.log(`BFF is now listening on port ${port}`);
-})
+});

@@ -1,6 +1,8 @@
 import axios from 'axios';
 import { Request, Response } from 'express';
 import { isIP } from 'node:net';
+import RDAP_RES from './rdap';
+import VCard from '../vcard';
 
 /**
  * Given a possible IP+range string, validate it (or throw an error if invalid)
@@ -30,6 +32,18 @@ const validateIP = (ip: any) => {
     ) throw "IP range out of bounds";
 }
 
+const getVCardForRole = (entities: RDAP_RES.Entity[], role: string) => {
+    const [entity] = entities.filter(entity => entity.roles.includes(role));
+    type field = [string, any, "text", any];
+    if (!entity) return;
+    const vcardFields: field[] = entity.vcardArray[1];
+    return vcardFields.reduce(
+        (acc, [name, data0, _, data1]) =>
+            ({ ...acc, [name]: [data0, data1] }),
+        {}
+    ) as VCard;
+}
+
 const handler = async (req: Request, res: Response) => {
     // Validate IP address
     try { validateIP(req.query.ip); }
@@ -38,8 +52,11 @@ const handler = async (req: Request, res: Response) => {
         return;
     }
     const { ip } = req.query;
-    const { data } = await axios(`https://rdap.apnic.net/ip/${ip}`);
-    res.send(`Recieved!`);
+    const { startAddress, endAddress, entities, name, country }: RDAP_RES.Response =
+        (await axios(`https://rdap.apnic.net/ip/${ip}`)).data;
+    const technicalContact = getVCardForRole(entities, "technical");
+    const abuseContact = getVCardForRole(entities, "abuse");
+    res.send({startAddress, endAddress, technicalContact, abuseContact, name, country});
 }
 
 export default handler;
