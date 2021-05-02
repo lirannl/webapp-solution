@@ -1,0 +1,14 @@
+{
+  "name": "bff",
+  "version": "1.0.0",
+  "description": "Backend For Frontend",
+  "main": "index.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Liran Piade",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
