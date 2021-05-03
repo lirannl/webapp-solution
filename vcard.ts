@@ -1,4 +1,4 @@
-type VFields = {[name: string]: [any, any]};
+type VFields = {[name: string]: [any, any] | undefined};
 
 interface VCard extends VFields {
     adr: [{label: string}, string[]];
@@ -6,7 +6,7 @@ interface VCard extends VFields {
     fn: [{}, string];
     kind: [{}, string];
     org: [{}, string];
-    tel: [{type: string[]}, string];
+    tel?: [{type: string[]}, string];
     version: [{}, string];
 }
 

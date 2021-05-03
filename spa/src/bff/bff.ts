@@ -4,7 +4,7 @@ interface res {
     abuseContact: VCard;
     technicalContact: VCard;
     name: string;
-    country: string;
+    country?: string;
     startAddress: string;
     endAddress: string;
     handle: string;

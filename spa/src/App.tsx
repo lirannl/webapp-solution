@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Container, Form, Row, Col, Card, Collapse, Alert } from 'react-bootstrap';
+import { Button, Container, Form, Card, Alert, ProgressBar } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import BFF from './bff/bff';
 import './App.css';
@@ -17,22 +17,27 @@ const ResultsField = ({ result }: { result: BFF | null | string }) => {
 
 function App() {
   const [result, setResult] = React.useState(null as BFF | null | string);
+  const [loading, setLoading] = React.useState(false);
   return (
     <div className="App">
       <Container><Card body><form onSubmit={async event => {
         event.preventDefault();
         const handle = (event.target as unknown as { value: string }[])[0].value;
+        setLoading(true);
         const res = await fetch(`http://localhost:8081/?handle=${handle}`);
         if (!res.ok) { setResult(`Communication with API has failed - ${res.statusText}`); return; }
         const body: BFF = { ...await res.json(), handle };
         setResult(body);
+        setLoading(false);
       }}>
         <Form.Control />
         <Button variant="primary" type="submit">
           Search
         </Button>
       </form></Card></Container>
-      <ResultsField {...{ result }} />
+      {loading ?
+        <Container><ProgressBar animated now={100} /></Container> :
+        <ResultsField {...{ result }} />}
     </div>
   );
 }
