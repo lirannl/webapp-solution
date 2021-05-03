@@ -20,21 +20,24 @@ function App() {
   const [loading, setLoading] = React.useState(false);
   return (
     <div className="App">
-      <Container><Card body><form onSubmit={async event => {
-        event.preventDefault();
-        const handle = (event.target as unknown as { value: string }[])[0].value;
-        setLoading(true);
-        const res = await fetch(`http://localhost:8081/?handle=${handle}`);
-        if (!res.ok) { setResult(`Communication with API has failed - ${res.statusText}`); return; }
-        const body: BFF = { ...await res.json(), handle };
-        setResult(body);
-        setLoading(false);
-      }}>
-        <Form.Control />
-        <Button variant="primary" type="submit">
-          Search
+      <Container><Card>
+        <Card.Header>Search for Internet Resource Registration Data</Card.Header>
+        <Card.Body><form onSubmit={async event => {
+          event.preventDefault();
+          const handle = (event.target as unknown as { value: string }[])[0].value;
+          setLoading(true);
+          const res = await fetch(`http://localhost:8081/?handle=${handle}`);
+          if (!res.ok) { setResult(`Communication with API has failed - ${res.statusText}`); return; }
+          const body: BFF = { ...await res.json(), handle };
+          setResult(body);
+          setLoading(false);
+        }}>
+          <Form.Control />
+          <Button variant="primary" type="submit">
+            Search
         </Button>
-      </form></Card></Container>
+        </form></Card.Body>
+      </Card></Container>
       {loading ?
         <Container><ProgressBar animated now={100} /></Container> :
         <ResultsField {...{ result }} />}
