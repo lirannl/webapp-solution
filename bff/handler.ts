@@ -8,7 +8,7 @@ import VCard from '../vcard';
  * Given a possible IP+range string, validate it (or throw an error if invalid)
  * @param ip possible IP+range string
  */
-const validateIP = (ip: any) => {
+const validateHandle = (ip: any) => {
     if (typeof ip != "string") throw "Invalid request. Query doesn't contain an ip field";
     const [address, rangeStr] = ip.split('/');
     const v = isIP(address);
@@ -46,17 +46,17 @@ const getVCardForRole = (entities: RDAP_RES.Entity[], role: string) => {
 
 const handler = async (req: Request, res: Response) => {
     // Validate IP address
-    try { validateIP(req.query.ip); }
+    try { validateHandle(req.query.handle); }
     catch (e) {
         res.status(400).send(e);
         return;
     }
-    const { ip } = req.query;
+    const { handle } = req.query;
     const { startAddress, endAddress, entities, name, country }: RDAP_RES.Response =
-        (await axios(`https://rdap.apnic.net/ip/${ip}`)).data;
+        (await axios(`https://rdap.apnic.net/ip/${handle}`)).data;
     const technicalContact = getVCardForRole(entities, "technical");
     const abuseContact = getVCardForRole(entities, "abuse");
-    res.send({startAddress, endAddress, technicalContact, abuseContact, name, country});
+    res.status(200).send({startAddress, endAddress, technicalContact, abuseContact, name, country});
 }
 
 export default handler;

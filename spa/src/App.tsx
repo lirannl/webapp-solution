@@ -1,24 +1,38 @@
 import React from 'react';
-import logo from './logo.svg';
+import { Button, Container, Form, Row, Col, Card, Collapse, Alert } from 'react-bootstrap';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import BFF from './bff/bff';
 import './App.css';
+import ResultCard from './components/resultsCard';
+
+/**
+ * @param result If the passed result is a string, treat it as an error, otherwise, the result should be a BFF response 
+ * @returns A results alert/card/nothing (if the result is null)
+ */
+const ResultsField = ({ result }: { result: BFF | null | string }) => {
+  if (typeof result === "string") return <Alert variant="warning">{result}</Alert>
+  else if (result) return <ResultCard {...{ result }} />
+  else return <React.Fragment />
+}
 
 function App() {
+  const [result, setResult] = React.useState(null as BFF | null | string);
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Container><Card body><form onSubmit={async event => {
+        event.preventDefault();
+        const handle = (event.target as unknown as { value: string }[])[0].value;
+        const res = await fetch(`http://localhost:8081/?handle=${handle}`);
+        if (!res.ok) { setResult(`Communication with API has failed - ${res.statusText}`); return; }
+        const body: BFF = { ...await res.json(), handle };
+        setResult(body);
+      }}>
+        <Form.Control />
+        <Button variant="primary" type="submit">
+          Search
+        </Button>
+      </form></Card></Container>
+      <ResultsField {...{ result }} />
     </div>
   );
 }
