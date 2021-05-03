@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react';
 import { Card, CardDeck, Container, Row, Col } from 'react-bootstrap';
-import VCard from '../../../vcard';
+import VCard from '../vcard';
 import BFF from '../bff/bff';
 import { List, Horz } from '../components/list';
 

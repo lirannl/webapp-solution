@@ -1,4 +1,4 @@
-import VCard from '../../../vcard';
+import VCard from '../vcard';
 
 interface res {
     abuseContact: VCard;

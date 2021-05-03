@@ -2,14 +2,14 @@ import axios from 'axios';
 import { Request, Response } from 'express';
 import { isIP } from 'node:net';
 import RDAP_RES from './rdap';
-import VCard from '../vcard';
+import VCard from './vcard';
 
 /**
  * Given a possible IP+range string, validate it (or throw an error if invalid)
  * @param ip possible IP+range string
  */
 const validateHandle = (ip: any) => {
-    if (typeof ip != "string") throw "Invalid request. Query doesn't contain an ip field";
+    if (typeof ip != "string") throw "Invalid request. Query doesn't contain a handle field";
     const [address, rangeStr] = ip.split('/');
     const v = isIP(address);
     if (v == 0) throw `Invalid request. \"ip\" field doesn't contain a valid IP address`;
