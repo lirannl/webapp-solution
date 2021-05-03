@@ -1,0 +1,9 @@
+services:
+  spa:
+    build: spa
+    ports:
+      - "8080:5000"
+  bff:
+    build: bff
+    ports:
+      - "8081:8081"
